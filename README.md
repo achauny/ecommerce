@@ -92,3 +92,86 @@ access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
     - { path: ^/, roles: ROLE_USER }
 ```
+
+## Création d'un utilisateur dans la base de données
+Pour créer un utilisateur dans la base de données, on aura besoin du mot de passe hashé.
+```ssh
+php bin/console security:hash-password
+```
+Puis saisir le mot de passe à encoder. La ligne de commande nous retournera le `Password hash` qu'il faudra mettre dans le champ `password` pour l'utilisateur dans la base de données.
+
+On peut ensuite se connecter avec les informations saisie dans la base de données.
+
+
+# Mise en place d'un User Checker
+
+Un User Checker est une fonctionnalité de sécurité dans Symfony qui est utilisée pour vérifier l'état de l'utilisateur avant qu'il ne soit authentifié. Cela permet de bloquer l'accès aux utilisateurs qui ne sont pas activés, dont le compte a été supprimé ou qui ont d'autres restrictions qui les empêchent de se connecter.
+
+## Ajout du champ enable dans l'entité User
+On utilise le maker pour ajouter le champ `enable` :
+```ssh
+ php bin/console make:entity User
+```
+
+On met à jour la base de données :
+```ssh
+ php bin/console make:migration
+ ```
+
+```ssh
+ php bin/console doctrine:migrations:migrate
+```
+
+## Ajout du UserChecker
+Dans le dossier `Security` on ajoute un fichier `UserChecker.php` qui va vérifier avant la connexion si l'utilisateur est bien activé.
+```php
+<?php
+
+namespace App\Security;
+
+use App\Entity\User as AppUser;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+class UserChecker implements UserCheckerInterface
+{
+    public function checkPreAuth(UserInterface $user): void
+    {
+        if (!$user instanceof AppUser) {
+            return;
+        }
+
+        // On vérifie si l'utilisateur est activé
+        if (!$user->isEnable()) {
+            // the message passed to this exception is meant to be displayed to the user
+            throw new CustomUserMessageAccountStatusException('Votre compte a été désactivé');
+        }
+    }
+
+    public function checkPostAuth(UserInterface $user): void
+    {
+        if (!$user instanceof AppUser) {
+            return;
+        }
+
+        /*// user account is expired, the user may be notified
+        if ($user->isExpired()) {
+            throw new AccountExpiredException('...');
+        }*/
+    }
+}
+```
+
+### Paramétrage du UserChecker
+Il faut définir sur quel firewall on va utiliser le UserChecker. Il faut se rendre dans le fichier `security.yaml` et pour le firewall `main` définir le paramètre `user_checker` :
+```yaml
+firewalls:
+  #...
+  main:
+    #...
+    custom_authenticator: App\Security\AppAuthenticator
+    user_checker: App\Security\UserChecker
+    #...
+```
+
