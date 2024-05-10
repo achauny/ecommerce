@@ -267,3 +267,25 @@ On met à jour la base de données pour ajouter les champs `createdAt` et `updat
 ```ssh
  php bin/console doctrine:migrations:migrate
 ```
+
+# Flashbag
+Pour avoir les flashbag sur l'ensemble des pages, on va les mettre dans le modèle `base.html.twig` :
+```yaml
+{% for message in app.flashes('success') %}
+    <div class="flash-notice">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('error') %}
+    <div class="flash-notice">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{# .. Les autres type de flashbag .. #}
+
+{% block body %}
+
+{% endblock %}
+```
