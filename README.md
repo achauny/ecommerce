@@ -175,3 +175,95 @@ firewalls:
     #...
 ```
 
+# Trait
+En PHP, un trait est un mécanisme permettant la réutilisation d'attributs et de méthodes dans différentes classes.
+Au lieu de les créer dans toutes les entités, on va importer le trait qui va importer les attributs et méthodes.
+
+## Installation
+
+```bash
+composer require stof/doctrine-extensions-bundle
+```
+
+## Configuration
+Changer la configuration par defaut dans le `stof_doctrine_extensions.yaml` créé par défaut (package/config) pour activer le timestampable pour les dates :
+```yaml
+stof_doctrine_extensions:
+    default_locale: fr_FR
+    orm:
+        default:
+            timestampable: true
+```
+
+## Utilisation
+On veut ajouter les champs `createdAt` et `updatedAt` et les getters/setters.
+
+### Création du trait
+Créer un dossier `Traits` dans le dossier `Entity` :
+```php
+<?php
+namespace App\Entity\Traits;
+
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+trait DateTrait {
+
+    #[ORM\Column(name: "created_at", type: "datetime", nullable: true)]
+    #[Gedmo\Timestampable(on: "create")]
+    private ?\DateTimeInterface $createdAt;
+
+    #[ORM\Column(name: "created_at", type: "datetime", nullable: true)]
+    #[Gedmo\Timestampable(on: "update")]
+    private ?\DateTimeInterface $updatedAt;
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+}
+```
+
+### Importation du trait dans une entité
+Dans la classe où on souhaite utiliser le trait on l'importe avec le use :
+```php
+use App\Entity\Traits\DateTrait;
+
+class Product
+{
+    use DateTrait;
+    
+    // ...
+}
+```
+
+Dans cette entité `Product`, chaque fois qu'un objet `Product` est créé, le trait `DateTrait` est utilisé pour vérifier s'il y a des annotations Gedmo avec les instructions `on: "create"`. 
+
+De même, chaque fois qu'un objet `Product` est mis à jour, le trait vérifie les annotations Gedmo avec les instructions `on: "update"`.
+
+Les champs `createdAt` et `updatedAt` sont automatiquement mis à jour en conséquence.
+
+### Mise à jour de la base de données
+On met à jour la base de données pour ajouter les champs `createdAt` et `updatedAt`.
+```ssh
+ php bin/console make:migration
+ ```
+
+```ssh
+ php bin/console doctrine:migrations:migrate
+```
