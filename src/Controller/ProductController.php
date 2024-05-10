@@ -40,8 +40,27 @@ class ProductController extends AbstractController
             "redirectSuccess" => $this->urlGenerator->generate("app_products"),
         ]);
 
-        return (!is_null($redirect)) ? $redirect : $this->render('product/add.html.twig', [
+        return (!is_null($redirect)) ? $redirect : $this->render('product/form.html.twig', [
             'form' => $form->createView(),
+            'add' => true,
+        ]);
+    }
+
+    #[Route('/produits/{id}/modifier/', name: 'app_products_edit')]
+    public function edit(Request $request, Product $product): Response
+    {
+        $form = $this->createForm(ProductType::class, $product);
+
+        $redirect = FormUtils::validateForm($form, [
+            "request" => $request,
+            "modelClass" => $this->productModel,
+            "flashbagSuccess" => "Produit modifié avec succès.",
+            "redirectSuccess" => $this->urlGenerator->generate("app_products"),
+        ]);
+
+        return (!is_null($redirect)) ? $redirect : $this->render('product/form.html.twig', [
+            'form' => $form->createView(),
+            'add' => false
         ]);
     }
 }

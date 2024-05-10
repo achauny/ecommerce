@@ -8,7 +8,10 @@
 
     <ul>
         {% for product in listProducts %}
-            <li>{{ product.name }}</li>
+            <li>
+                {{ product.name }}
+                <a href="{{ path('app_products_edit', {'id': product.id}) }}">Modifier</a>
+            </li>
         {% endfor %}
     </ul>
     <a href="{{ path('app_products_add') }}">Ajouter un produit</a>
