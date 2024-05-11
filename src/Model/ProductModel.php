@@ -9,7 +9,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 readonly class ProductModel
 {
-    public function __construct(private EntityManagerInterface $entityManager, private readonly Security $security){
+    public function __construct(private EntityManagerInterface $entityManager){
     }
 
     public function add(Product $product): void {
@@ -18,12 +18,9 @@ readonly class ProductModel
 
     public function save(Product $product): void{
         try{
-            if($product->getId() !== null){
-                $product->setUpdatedBy($this->security->getUser());
-            } else {
-                $product->setCreatedBy($this->security->getUser());
+            if($product->getId() === null){
+                $this->entityManager->persist($product);
             }
-            $this->entityManager->persist($product);
             $this->entityManager->flush();
         } catch (Exception $e){
             throw new \RuntimeException($e->getMessage());
