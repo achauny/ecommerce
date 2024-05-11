@@ -43,7 +43,6 @@ class ProductController extends AbstractController
 
         return (!is_null($redirect)) ? $redirect : $this->render('product/form.html.twig', [
             'form' => $form->createView(),
-            'add' => true,
         ]);
     }
 
@@ -62,7 +61,7 @@ class ProductController extends AbstractController
 
         return (!is_null($redirect)) ? $redirect : $this->render('product/form.html.twig', [
             'form' => $form->createView(),
-            'add' => false
+            'product' => $product
         ]);
     }
 }
