@@ -311,3 +311,117 @@ Les `Utils` vont permettre par exemple de gérer la validation des formulaires �
 
 Avec une structure bien définie, il est plus facile de localiser et de modifier le code, ce qui rend la maintenance plus simple et moins sujette aux erreurs.
 L'ajout et/ou la maintenance de nouvelles fonctionnalités est également plus facile.
+
+
+# Voter
+
+Les Voters sont des classes utilisées dans Symfony pour implémenter un contrôle d'accès basé sur une logique métier.
+
+Ils retournent true si l'accès est autorisé et false si l'accès est refusé.
+
+## Création d'un Voter générique
+Créer un fichier `CustomVoter.php` dans le dossier `src` puis `Security` afin de créer le Voter générique.
+
+Il est possible de créer un Voter par logique métier mais cela sera plus maintenable d'avoir un seul et même voter avec les différentes méthodes.
+
+
+```php
+class CustomVoter extends Voter
+{
+     // Les constantes sont utilisé pour lister les différentes types d'action qui seront écoutés
+     public const EDIT = 'edit';
+     public const VIEW = 'view';
+     
+     // La méthode supports est appelé en premier et va vérifier si dans l'attribut du voter de la méthode on a mis soit edit soit view
+     protected function supports(string $attribute, mixed $subject): bool
+    {
+        // $subject = type de l'objet
+        return in_array($attribute, [self::EDIT, self::VIEW]);
+    }
+    // ....
+}
+```
+
+## Appel du voter dans le controlleur
+
+On veut bloquer l'édition du produit à l'utilisateur qui l'a créé seulement :
+```php
+// ...
+#[IsGranted('view', 'product')] // On met le type de vérification et le type d'objet
+public function edit(Product $product): Response
+{
+
+}
+```
+`IsGranted` :
+L'annotation IsGranted est utilisée pour vérifier si un utilisateur a accès à une certaine fonctionnalité ou à une certaine ressource dans Symfony.
+
+`edit` :
+C'est le type d'action que l'on vérifie.
+C'est ce type qu'on récupère dans notre Voter afin qu'on applique telle ou telle logique métier par rapport au type (edit, view...)
+
+
+`product` :
+C'est la ressource sur laquelle on vérifie les autorisations. Il est important de le préciser car cela sera le type de l'objet récupérer dans le Voter.
+
+## Mise en place du système générique
+
+### Arguments sur les méthodes des controlleurs
+
+Pour passer nos arguments de chaque méthode au voter, on va utiliser le tableau `options` pour passer tous nos arguments :
+```php
+#[Route('/produits/{id}/modifier/', name: 'app_products_edit', options: ['methodApply' => 'verifyCreatedBy', 'redirectRoute' => 'app_products'])]
+#[IsGranted('edit', 'product')]
+public function edit(Request $request, Product $product): Response
+{
+    // ...
+}
+```
+Dans le tableau options, on indique la méthode a appelé pour appliquer la logique métier dans le Voter et la route vers laquelle l'utilisateur sera redirigé si le voter renvoie `false`.
+
+### Méthode générique
+
+La méthode suivante à pour but de récupérer la méthode du controller qui est appelée.
+En obtenant cette méthode on va pouvoir lire les attributs de la méthode et ainsi récupérer notre tableau `options` :
+
+```php
+class CustomVoter extends Voter
+{
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    {
+        $user = $token->getUser();
+        $request = $this->requestStack->getCurrentRequest();
+
+        $controller = $request?->attributes->get('_controller');
+        $tabController = explode('::', $controller);
+
+        $currentController = new \ReflectionClass($tabController[0]);
+        $method = $currentController->getMethod($tabController[1]);
+        $options = current($method->getAttributes(Route::class))->getArguments()['options'];
+
+        // if the user is anonymous, do not grant access
+        if (!$user instanceof UserInterface) {
+            return false;
+        }
+
+        return match($attribute) {
+            self::EDIT => $this->{$options['methodApply']}($request, $subject, $user, $options['redirectRoute']),
+            default => true,
+        };
+    }
+}
+```
+
+Exemple de logique métier dans le Voter :
+
+```php
+protected function verifyCreatedBy(Request $request, $subject, UserInterface $user, string $routeRedirect): bool{
+    if (!($subject->getCreatedBy()->getId() === $user->getId())) {
+        $request->getSession()->getFlashBag()->add('error', 'Vous n\'avez pas accès à cette donnée.');
+        $url = $this->urlGenerator->generate($routeRedirect);
+        header('Location: ' . $url);
+        exit;
+    }
+    return true;
+}
+```
