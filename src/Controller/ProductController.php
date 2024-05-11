@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProductController extends AbstractController
 {
@@ -46,7 +47,8 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/produits/{id}/modifier/', name: 'app_products_edit')]
+    #[Route('/produits/{id}/modifier/', name: 'app_products_edit', options: ['methodApply' => 'verifyCreatedBy', 'redirectRoute' => 'app_products'])]
+    #[IsGranted('edit', 'product')] // On met le type de vérification et le type d'objet
     public function edit(Request $request, Product $product): Response
     {
         $form = $this->createForm(ProductType::class, $product);

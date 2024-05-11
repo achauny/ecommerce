@@ -27,6 +27,13 @@ class Product
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
     private ?string $stock = null;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
+
+    #[ORM\ManyToOne]
+    private ?User $updatedBy = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -64,6 +71,30 @@ class Product
     public function setStock(string $stock): static
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getUpdatedBy(): ?User
+    {
+        return $this->updatedBy;
+    }
+
+    public function setUpdatedBy(?User $updatedBy): static
+    {
+        $this->updatedBy = $updatedBy;
 
         return $this;
     }

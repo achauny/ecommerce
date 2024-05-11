@@ -5,10 +5,11 @@ namespace App\Model;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Bundle\SecurityBundle\Security;
 
 readonly class ProductModel
 {
-    public function __construct(private EntityManagerInterface $entityManager){
+    public function __construct(private EntityManagerInterface $entityManager, private readonly Security $security){
     }
 
     public function add(Product $product): void {
@@ -17,6 +18,11 @@ readonly class ProductModel
 
     public function save(Product $product): void{
         try{
+            if($product->getId() !== null){
+                $product->setUpdatedBy($this->security->getUser());
+            } else {
+                $product->setCreatedBy($this->security->getUser());
+            }
             $this->entityManager->persist($product);
             $this->entityManager->flush();
         } catch (Exception $e){
