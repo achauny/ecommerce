@@ -289,3 +289,25 @@ Pour avoir les flashbag sur l'ensemble des pages, on va les mettre dans le modè
 
 {% endblock %}
 ```
+
+# Nouvelle structure
+Il existe différent types de structure, notamment l'architecture DDD mais celle ci-dessous est très facile d'utilisation et ne change pas trop les habitudes.
+
+Le but est de séparer le code en 6 grandes parties :
+* `Entity` : Contiendra toutes les entités
+* `Controller` : Contiendra tous les controllers, cependant ceux-ci ne serviront qu'a générer les méthodes et les routes. Il ne doit y avoir aucune logique métier dedans
+* `Repository` : Aura toutes les méthodes pour récupérer les données comme la structure classique
+* `Services` : Chaque Entité aura un service, c'est celui-ci qui va gérer toute la partie métier
+* `Model` : Chaque Entité aura un model, c'est lui qui va gérer les intéraction avec la base de données (ajout, modification, suppression)
+* `Utils` : Va rassembler les utilitaires qui seront appeler plusieurs fois. Cela évite la dupplication de code. Dans la structure classique MVC, ils correspondent au service.
+Dans notre exemple on a un `FormUtils` qui permet de centralisé la validation des formulaires.
+
+## Avantages
+En plaçant la logique métier dans des services, on créer des composants réutilisables qui peuvent être appelés à partir de n'importe quel contrôleur.
+
+En isolant la logique métier dans des `Services`, on facilite les tests unitaires en testant chaque service individuellement.
+
+Les `Utils` vont permettre par exemple de gérer la validation des formulaires à un seul et même endroit. Cela peut être utile si on veut activer un système de log ou faire une logique particulière, on n'aura pas à le faire à plusieurs endroits.
+
+Avec une structure bien définie, il est plus facile de localiser et de modifier le code, ce qui rend la maintenance plus simple et moins sujette aux erreurs.
+L'ajout et/ou la maintenance de nouvelles fonctionnalités est également plus facile.
