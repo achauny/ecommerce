@@ -3,9 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Category;
-use App\Entity\Product;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -13,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProductType extends AbstractType
+class CategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -22,17 +20,17 @@ class ProductType extends AbstractType
                 'label' => 'Nom produit',
                 'required' => true,
             ])
-            ->add('price',NumberType::class, [
-                'label' => 'Prix',
+            ->add('priority', NumberType::class, [
+                'label' => 'Priorité',
                 'required' => true,
             ])
-            ->add('stock',NumberType::class, [
-                'label' => 'Quantité',
+            ->add('level', NumberType::class, [
+                'label' => 'Niveau',
                 'required' => true,
             ])
-            ->add('category',EntityType::class, [
+            ->add('parentCategory',EntityType::class, [
                 'class' => Category::class,
-                'label' => 'Catégorie',
+                'label' => 'Catégorie parente',
                 'required' => true,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c')
@@ -53,7 +51,7 @@ class ProductType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Product::class,
+            'data_class' => Category::class,
         ]);
     }
 }
