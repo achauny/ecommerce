@@ -6,7 +6,7 @@ On créer l'entité `User` via le maker.
 php bin/console make:user
 ```
 On répond oui a tous et on choisi l'attribut qui va être unique, soit l'email, soit l'username soit un uuid.
-On répond ouipour le hash du mot de passe.
+On répond oui pour le hash du mot de passe.
 
 ### Mise à jour de la base de données (migrations)
 
@@ -73,7 +73,7 @@ Puis créer la vue `home.html.twig` dans le dossier `templates` puis `default` :
 
 ### Redirection vers la page d'accueil
 
-Après que l'utilisateur soit connecté, le `AppCustomAuthenticator` va rediriger vers une 
+Après que l'utilisateur soit connecté, le `AppCustomAuthenticator` va rediriger vers la route de la page d'accueil
 ```php
 public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
 {
@@ -100,12 +100,12 @@ php bin/console security:hash-password
 ```
 Puis saisir le mot de passe à encoder. La ligne de commande nous retournera le `Password hash` qu'il faudra mettre dans le champ `password` pour l'utilisateur dans la base de données.
 
-On peut ensuite se connecter avec les informations saisie dans la base de données.
+On peut ensuite se connecter avec les informations saisies dans la base de données.
 
 
 # Mise en place d'un User Checker
 
-Un User Checker est une fonctionnalité de sécurité dans Symfony qui est utilisée pour vérifier l'état de l'utilisateur avant qu'il ne soit authentifié. Cela permet de bloquer l'accès aux utilisateurs qui ne sont pas activés, dont le compte a été supprimé ou qui ont d'autres restrictions qui les empêchent de se connecter.
+Un User Checker est une fonctionnalité de sécurité dans Symfony qui est utilisé pour appliquer une logique métier lors de la connexion. Par exemple pour vérifier si l'utilisateur qui essaye de se connecter est bien toujours activé.
 
 ## Ajout du champ enable dans l'entité User
 On utilise le maker pour ajouter le champ `enable` :
@@ -123,7 +123,7 @@ On met à jour la base de données :
 ```
 
 ## Ajout du UserChecker
-Dans le dossier `Security` on ajoute un fichier `UserChecker.php` qui va vérifier avant la connexion si l'utilisateur est bien activé.
+Dans le dossier `Security` on ajoute un fichier `UserChecker.php` qui va vérifier lors de la connexion si l'utilisateur est bien activé.
 ```php
 <?php
 
@@ -177,9 +177,10 @@ firewalls:
 
 # Trait
 En PHP, un trait est un mécanisme permettant la réutilisation d'attributs et de méthodes dans différentes classes.
-Au lieu de les créer dans toutes les entités, on va importer le trait qui va importer les attributs et méthodes.
+Au lieu de les créer dans toutes les entités, on va simplement utiliser le trait qui va importer les attributs et méthodes.
 
 ## Installation
+Pour pousser l'utilisation des traits, nous allons installer un bundle qui permettra de détecter certains événements, par exemple la création ou la mise à jour d'un objet.
 
 ```bash
 composer require stof/doctrine-extensions-bundle
@@ -240,7 +241,7 @@ trait DateTrait {
 ```
 
 ### Importation du trait dans une entité
-Dans la classe où on souhaite utiliser le trait on l'importe avec le use :
+Dans la classe où on souhaite utiliser le trait on l'importe :
 ```php
 use App\Entity\Traits\DateTrait;
 
@@ -255,6 +256,7 @@ class Product
 Dans cette entité `Product`, chaque fois qu'un objet `Product` est créé, le trait `DateTrait` est utilisé pour vérifier s'il y a des annotations Gedmo avec les instructions `on: "create"`. 
 
 De même, chaque fois qu'un objet `Product` est mis à jour, le trait vérifie les annotations Gedmo avec les instructions `on: "update"`.
+Dans le cas d'une mise à jour, si aucun des champs de l'objet n'est mis à jour, l'événement `on: "update"` ne se déclenche pas.
 
 Les champs `createdAt` et `updatedAt` sont automatiquement mis à jour en conséquence.
 
@@ -347,14 +349,14 @@ class CustomVoter extends Voter
 On veut bloquer l'édition du produit à l'utilisateur qui l'a créé seulement :
 ```php
 // ...
-#[IsGranted('view', 'product')] // On met le type de vérification et le type d'objet
+#[IsGranted('edit', 'product')] // On met le type de vérification et le type d'objet
 public function edit(Product $product): Response
 {
 
 }
 ```
 `IsGranted` :
-L'annotation IsGranted est utilisée pour vérifier si un utilisateur a accès à une certaine fonctionnalité ou à une certaine ressource dans Symfony.
+L'annotation `IsGranted` est utilisée pour vérifier si un utilisateur a accès à une certaine fonctionnalité ou à une certaine ressource dans Symfony.
 
 `edit` :
 C'est le type d'action que l'on vérifie.
@@ -425,3 +427,6 @@ protected function verifyCreatedBy(Request $request, $subject, UserInterface $us
     return true;
 }
 ```
+
+# Test unitaire
+// ...

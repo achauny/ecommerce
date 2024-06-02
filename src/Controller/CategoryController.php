@@ -37,7 +37,7 @@ class CategoryController extends AbstractController
         $redirect = FormUtils::validateForm($form, [
             "request" => $request,
             "modelClass" => $this->categoryModel,
-            "flashbagSuccess" => "Produit ajouté avec succès.",
+            "flashbagSuccess" => "Catégorie ajoutée avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_categories"),
         ]);
 
@@ -55,7 +55,7 @@ class CategoryController extends AbstractController
         $redirect = FormUtils::validateForm($form, [
             "request" => $request,
             "modelClass" => $this->categoryModel,
-            "flashbagSuccess" => "Produit modifié avec succès.",
+            "flashbagSuccess" => "Catégorie modifiée avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_categories"),
         ]);
 
