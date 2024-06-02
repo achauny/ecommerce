@@ -3,20 +3,58 @@
 {% block title %} Fiche produit {% endblock %}
 
 {% block body %}
-    Fiche du produit
-    <br/>
-    <br/>
+    <div class="title">Fiche du produit</div>
 
-    Nom : {{ product.name }} <br/>
-    Catégorie : {{ product.category }} <br/>
-    Prix : {{ product.price }}€ <br/>
-    Quantité : {{ product.stock }} <br/>
-    Nombre de vues : {{ product.numberView }} <br/>
-    Description : {{ product.description }} <br/>
+    <dl class="divide-y divide-gray-300">
+        <div class="block-tab_informations">
+            <dt class="block-tab_informations_title">Nom  :</dt>
+            <dd class="block-tab_informations_value">
+                {{ product.name }}
+            </dd>
+        </div>
+
+        <div class="block-tab_informations">
+            <dt class="block-tab_informations_title">Catégorie  :</dt>
+            <dd class="block-tab_informations_value">
+                {{ product.category }}
+            </dd>
+        </div>
+
+        <div class="block-tab_informations">
+            <dt class="block-tab_informations_title">Prix  :</dt>
+            <dd class="block-tab_informations_value">
+                {{ product.price }}€
+            </dd>
+        </div>
+
+        <div class="block-tab_informations">
+            <dt class="block-tab_informations_title">Quantité  :</dt>
+            <dd class="block-tab_informations_value">
+                {{ product.stock }}
+            </dd>
+        </div>
+
+        <div class="block-tab_informations">
+            <dt class="block-tab_informations_title">Nombre de vue  :</dt>
+            <dd class="block-tab_informations_value">
+                {{ product.numberView }}
+            </dd>
+        </div>
+
+        <div class="block-tab_informations">
+            <dt class="block-tab_informations_title">Description :</dt>
+            <dd class="block-tab_informations_value">
+                {{ product.description }}
+            </dd>
+        </div>
+    </dl>
 
 
-    <br/>
-    <a href="{{ path('app_cart_product_order', {'id': product.id}) }}">Commander</a>
-    <a href="{{ path('app_products') }}">Retour à la liste des produits </a>
+    <div class="flex flex-row mt-10 ">
+        <a href="{{ path('app_cart_product_order', {'id': product.id}) }}" class="button-primary">Commander</a>
+        <a href="{{ path('app_products') }}" class="button-default">Retour à la liste des produits </a>
+    </div>
+
+
 
 {% endblock %}

@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+body{
+    @apply bg-gray-200 m-24;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+ul {
+    list-style-type: none;
+}
+li {
+    margin: 5px 0;
+}
+.submenu {
+    margin-left: 20px;
+}
+
+/*------------------------------- BUTTON ---------------------------------*/
+a, button{
+    & span{
+        @apply align-middle;
+        font-size: 16px !important;
+    }
+}
+.button-primary{
+    @apply px-4 py-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm mr-1;
+}
+.button-default{
+    @apply px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 mr-1;
+}
+.button-danger{
+    @apply px-4 py-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm;
+}
+/*------------------------------- TABLE ---------------------------------*/
+table tbody tr td {
+    padding: 15px 15px !important;
+    font-size: 12px !important;
+
+    & .button-primary, & .button-default, & .button-danger{
+        @apply px-1 py-1;
+        & span{
+            font-size: 14px !important;
+        }
+    }
+}
+
+div.container-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+
+    & > div {
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 20px 5px 0 5px;
+        background-image: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 100%);
+        animation: bounce 1.5s 0.5s linear infinite;
+
+        &.color1{
+            @apply bg-blue-500;
+        }
+        &.color2{
+            @apply bg-green-500;
+        }
+        &.color3{
+            @apply bg-orange-500;
+        }
+        &.color4{
+            @apply bg-red-500;
+        }
+    }
+}
+
+@keyframes bounce {
+    0%, 50%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(0.6);
+    }
+    75% {
+        transform: scale(1.2);
+    }
+}
+
+/*------------------------------- TYPOGRAPHIE ---------------------------------*/
+.title{
+    @apply mb-7 font-medium text-slate-700;
+    font-size: 26px;
+    line-height: 1.25rem;
+    letter-spacing: -1px;
+}
+
+.subtitle{
+    @apply  text-sm font-medium mt-1 text-slate-400;
+}
+
+/*------------------------------- FORM ---------------------------------*/
+form {
+    & label{
+        @apply block mb-2 text-sm font-medium text-gray-900;
+    }
+
+    & input, select, textarea{
+        @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-5;
+    }
+}
+
+.block-tab_informations{
+    @apply px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0;
+
+    & .block-tab_informations_title{
+        @apply text-sm leading-6 text-gray-900 font-bold;
+
+    }
+
+    & .block-tab_informations_value{
+        @apply mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0;
+
+        & .subtitle{
+            @apply  text-xs font-medium truncate mt-1 text-gray-400;
+        }
+    }
+}
+
+
+

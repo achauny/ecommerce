@@ -2,8 +2,15 @@
 
 {% block title %} Votre panier {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('cart') }}
+{% endblock %}
+
 {% block body %}
-    <table>
+    <div class="title">Votre panier : {{ total }}€ TTC</div>
+
+    <table id="cartTable" class="display">
         <thead>
         <tr>
             <th>
@@ -35,16 +42,24 @@
                     <td>{{ cartProduct.quantity }}</td>
                     <td>{{ cartProduct.product.price *  cartProduct.quantity }}€</td>
                     <td>
-                        <a href="{{ path('app_products_view', {'id': cartProduct.product.id}) }}">Voir la fiche</a>
-                        <a href="{{ path('app_cart_product_delete', {'id': cartProduct.id }) }}">Supprimer du panier</a>
+                        <a class="button-default" href="{{ path('app_products_view', {'id': cartProduct.product.id}) }}">
+                            <span class="material-symbols-outlined">
+                                visibility
+                            </span>
+                        </a>
+                        <a class="button-danger" href="{{ path('app_cart_product_delete', {'id': cartProduct.id }) }}">
+                            <span class="material-symbols-outlined">
+                                delete
+                            </span>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <br/>
-    <br/>
-    <b>TOTAL TTC : {{ total }}€</b>
-    <br/>
-    <a href="{{ path('app_products') }}">Retour à la liste des produits </a>
+
+    <div class="flex flex-row mt-5">
+
+        <a href="{{ path('app_products') }}" class="button-default"> Retour à la liste des produits </a>
+    </div>
 {% endblock %}

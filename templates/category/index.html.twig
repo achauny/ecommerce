@@ -2,12 +2,16 @@
 
 {% block title %} Liste des catégories {% endblock %}
 
-{% block body %}
-    Liste des catégories
-    <br/>
-    <br/>
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('category') }}
+{% endblock %}
 
-    <table>
+{% block body %}
+    <div class="title">Liste des catégories</div>
+
+
+    <table id="categoryTable" class="display">
         <thead>
         <tr>
             <th>
@@ -39,19 +43,23 @@
                 <td>{{ category.level }}</td>
                 <td>{{ category.enable }}</td>
                 <td>
-                    <a href="{{ path('app_categories_edit', {'id': category.id}) }}">Modifier</a>
+                    <a class="button-primary" href="{{ path('app_categories_edit', {'id': category.id}) }}">
+                        <span class="material-symbols-outlined">
+                            edit
+                        </span>
+                    </a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <br/>
-    <br/>
 
-
-    <a href="{{ path('app_categories_add') }}">Ajouter une catégorie</a>
-    <br/><br/>
-    <a href="{{ path('app_home') }}">Retour page d'accueil</a>
+    <div class="flex flex-row mt-5">
+        <a href="{{ path('app_categories_add') }}"  class="button-primary">
+            Ajouter
+        </a>
+        <a href="{{ path('app_home') }}" class="button-default"> Retour page d'accueil </a>
+    </div>
 
 {% endblock %}

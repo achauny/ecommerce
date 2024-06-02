@@ -2,13 +2,21 @@
 
 {% block title %}
     {% if product is not defined %}
-        Ajouter un produit
+        Ajouter une catégorie
     {% else %}
-        Modifier un produit
+        Modifier une catégorie
     {% endif %}
 {% endblock %}
 
 {% block body %}
+    <div class="title">
+        {% if product is not defined %}
+            Ajouter une catégorie
+        {% else %}
+            Modifier une catégorie
+        {% endif %}
+    </div>
+
     {{ form_start(form) }}
     <div class="form-group">
         {{ form_label(form.name) }}
@@ -30,15 +38,19 @@
         {{ form_widget(form.priority) }}
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        {% if product is not defined %}
-            Ajouter
-        {% else %}
-            Modifier
-        {% endif %}
-    </button>
+
+    <div class="flex flex-row mt-10 ">
+        <button type="submit" class="button-primary">
+            {% if product is not defined %}
+                Ajouter
+            {% else %}
+                Modifier
+            {% endif %}
+        </button>
+        <a href="{{ path('app_categories') }}" class="button-default"> Retour à la liste des catégories </a>
+    </div>
+
     {{ form_end(form) }}
 
-    <a href="{{ path('app_categories') }}"> Retour </a>
 
 {% endblock %}

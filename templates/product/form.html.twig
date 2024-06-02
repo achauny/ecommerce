@@ -9,6 +9,14 @@
 {% endblock %}
 
 {% block body %}
+    <div class="title">
+        {% if product is not defined %}
+            Ajouter un produit
+        {% else %}
+            Modifier un produit
+        {% endif %}
+    </div>
+
     {{ form_start(form) }}
     <div class="form-group">
         {{ form_label(form.name) }}
@@ -37,15 +45,17 @@
         {{ form_widget(form.description) }}
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        {% if product is not defined %}
-            Ajouter
-        {% else %}
-            Modifier
-        {% endif %}
-    </button>
-    {{ form_end(form) }}
+    <div class="flex flex-row mt-10 ">
+        <button type="submit" class="button-primary">
+            {% if product is not defined %}
+                Ajouter
+            {% else %}
+                Modifier
+            {% endif %}
+        </button>
+        <a href="{{ path('app_products') }}" class="button-default"> Retour à la liste des produits </a>
+    </div>
 
-    <a href="{{ path('app_products') }}"> Retour </a>
+    {{ form_end(form) }}
 
 {% endblock %}

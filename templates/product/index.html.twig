@@ -2,24 +2,13 @@
 
 {% block title %} Liste des produits {% endblock %}
 
-{% block stylesheets %}
-    <style>
-        ul {
-            list-style-type: none;
-        }
-        li {
-            margin: 5px 0;
-        }
-        .submenu {
-            margin-left: 20px;
-        }
-    </style>
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('product') }}
 {% endblock %}
 
 {% block body %}
-    Liste des produits
-    <br/>
-    <br/>
+    <div class="title">Liste des produits</div>
 
     {% macro render_menu(items) %}
 
@@ -35,65 +24,83 @@
         {% endfor %}
     {% endmacro %}
 
-    <ul>
-        <li>
-            <a href="{{ path('app_products') }}"> Tous les produits </a>
-        </li>
-        {{ _self.render_menu(treeCategories) }}
-    </ul>
+    <div class="flex flex-row">
+        <div class="w-1/5">
+            <div class="subtitle"> FILTRES </div>
+            <ul class="mb-10">
+                <li>
+                    <a href="{{ path('app_products') }}"> Tous les produits </a>
+                </li>
+                {{ _self.render_menu(treeCategories) }}
+            </ul>
+        </div>
+        <div class="w-4/5">
+            <table id="productTable" class="display">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Catégorie
+                    </th>
+                    <th>
+                        Nom
+                    </th>
+                    <th>
+                        Prix
+                    </th>
+                    <th>
+                        Quantité
+                    </th>
+                    <th>
+                        Nombre de vues
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in listProducts %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price }}€</td>
+                        <td>{{ product.stock }}</td>
+                        <td>{{ product.numberView }}</td>
+                        <td>
+                            <a class="button-default" href="{{ path('app_products_view', {'id': product.id}) }}">
+                        <span class="material-symbols-outlined">
+                            visibility
+                        </span>
+                            </a>
+                            <a class="button-primary" href="{{ path('app_cart_product_order', {'id': product.id, 'idCategory': idCategory | default(null) }) }}">
+                        <span class="material-symbols-outlined">
+                            add_shopping_cart
+                        </span>
+                            </a>
+                            <a class="button-default" href="{{ path('app_products_edit', {'id': product.id}) }}">
+                        <span class="material-symbols-outlined">
+                            edit
+                        </span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="flex flex-row mt-5">
+                <a href="{{ path('app_products_add') }}"  class="button-primary">
+                    Ajouter
+                </a>
+                <a href="{{ path('app_home') }}" class="button-default"> Retour page d'accueil </a>
+            </div>
+        </div>
+    </div>
 
 
-    <table>
-        <thead>
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-                Catégorie
-            </th>
-            <th>
-                Nom
-            </th>
-            <th>
-                Prix
-            </th>
-            <th>
-                Quantité
-            </th>
-            <th>
-                Nombre de vues
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in listProducts %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.category }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.price }}€</td>
-                <td>{{ product.stock }}</td>
-                <td>{{ product.numberView }}</td>
-                <td>
-                    <a href="{{ path('app_products_view', {'id': product.id}) }}">Voir la fiche</a>
-                    <a href="{{ path('app_cart_product_order', {'id': product.id, 'idCategory': idCategory | default(null) }) }}">Commander</a>
-                    <a href="{{ path('app_products_edit', {'id': product.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <br/>
-    <br/>
-
-
-    <a href="{{ path('app_products_add') }}">Ajouter un produit</a>
-    <br/><br/>
-    <a href="{{ path('app_home') }}">Retour page d'accueil</a>
 
 {% endblock %}
