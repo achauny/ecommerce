@@ -149,9 +149,17 @@ class Category
     /**
      * @return Collection<int, self>
      */
-    public function getCategories(): Collection
+    public function getCategories($enable = null): Collection
     {
-        return $this->categories;
+        $tabCategory = new ArrayCollection();
+
+        foreach($this->categories as $category) {
+            if(is_null($enable) || ($category->isEnable() === $enable)) {
+                $tabCategory->add($category);
+            }
+        }
+
+        return $tabCategory;
     }
 
     public function addCategory(self $category): static

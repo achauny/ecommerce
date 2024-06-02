@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Model\CategoryModel;
+use App\Service\CategoryService;
 use App\Utils\FormUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CategoryController extends AbstractController
 {
-    public function __construct(private readonly CategoryModel $categoryModel, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
+    public function __construct(private readonly CategoryModel $categoryModel, private readonly CategoryService $categoryService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
     }
 
     #[Route('/categories', name: 'app_categories')]
