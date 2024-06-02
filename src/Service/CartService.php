@@ -38,10 +38,10 @@ readonly class CartService {
         $total = 0;
 
         foreach ($cart->getCartProducts() as $cartProduct) {
-            $total += round($cartProduct->getProduct()?->getPrice() * $cartProduct->getQuantity(), 2);
+            $total += $cartProduct->getProduct()?->getPrice() * $cartProduct->getQuantity();
         }
 
-        return $total;
+        return round($total, 2);
     }
 
     public function deleteProduct(RequestStack $request, CartProduct $cartProduct): void

@@ -2,18 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Cart;
-use App\Entity\CartProduct;
 use App\Entity\Product;
 use App\Form\ProductType;
-use App\Model\ProductModel;
+use App\Model\ObjectModel;
 use App\Service\CategoryService;
 use App\Service\ProductService;
 use App\Utils\FormUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -21,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductModel $productModel, private readonly ProductService $productService, private readonly  CategoryService $categoryService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
+    public function __construct(private readonly ObjectModel $objectModel, private readonly ProductService $productService, private readonly  CategoryService $categoryService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
     }
 
     #[Route('/produits', name: 'app_products')]
@@ -49,7 +46,7 @@ class ProductController extends AbstractController
 
         $redirect = FormUtils::validateForm($form, [
             "request"         => $request,
-            "modelClass"      => $this->productModel,
+            "modelClass"      => $this->objectModel,
             "flashbagSuccess" => "Produit ajouté avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_products"),
         ]);
@@ -67,7 +64,6 @@ class ProductController extends AbstractController
 
         $redirect = FormUtils::validateForm($form, [
             "request" => $request,
-            "modelClass" => $this->productModel,
             "flashbagSuccess" => "Produit modifié avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_products"),
         ]);

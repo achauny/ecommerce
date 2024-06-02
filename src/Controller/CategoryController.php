@@ -4,8 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
-use App\Model\CategoryModel;
-use App\Service\CategoryService;
+use App\Model\ObjectModel;
 use App\Utils\FormUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CategoryController extends AbstractController
 {
-    public function __construct(private readonly CategoryModel $categoryModel, private readonly CategoryService $categoryService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
+    public function __construct(private readonly ObjectModel $objectModel, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
     }
 
     #[Route('/categories', name: 'app_categories')]
@@ -36,7 +35,7 @@ class CategoryController extends AbstractController
 
         $redirect = FormUtils::validateForm($form, [
             "request" => $request,
-            "modelClass" => $this->categoryModel,
+            "modelClass" => $this->objectModel,
             "flashbagSuccess" => "Catégorie ajoutée avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_categories"),
         ]);
@@ -54,7 +53,7 @@ class CategoryController extends AbstractController
 
         $redirect = FormUtils::validateForm($form, [
             "request" => $request,
-            "modelClass" => $this->categoryModel,
+            "modelClass" => $this->objectModel,
             "flashbagSuccess" => "Catégorie modifiée avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_categories"),
         ]);
