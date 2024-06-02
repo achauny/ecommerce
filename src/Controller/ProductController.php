@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Model\ProductModel;
+use App\Service\CategoryService;
 use App\Service\ProductService;
 use App\Utils\FormUtils;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,14 +19,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductModel $productModel, private readonly ProductService $productService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
+    public function __construct(private readonly ProductModel $productModel, private readonly ProductService $productService, private readonly  CategoryService $categoryService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
     }
 
     #[Route('/produits', name: 'app_products')]
     public function index(): Response
     {
+        $treeCategories = $this->categoryService->buildTree();
+
         return $this->render('product/index.html.twig', array(
-            "listProducts" => $this->entityManager->getRepository(Product::class)->findAll(),
+            "listProducts" => (isset($_GET['idCategory']) && $_GET['idCategory'] !== "")
+                ? $this->entityManager->getRepository(Product::class)->findBy(
+                    ['category' => array_merge([$_GET['idCategory']], $this->categoryService->getCategoryChildrenIds($treeCategories, $_GET['idCategory']))],
+                    ['id' => 'ASC']
+                )
+                : $this->entityManager->getRepository(Product::class)->findBy(array(), ['id' => 'ASC']),
+            "treeCategories" => $treeCategories,
+            "idCategory" => $_GET['idCategory'] ?? ""
         ));
     }
 
@@ -36,8 +46,8 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);
 
         $redirect = FormUtils::validateForm($form, [
-            "request" => $request,
-            "modelClass" => $this->productModel,
+            "request"         => $request,
+            "modelClass"      => $this->productModel,
             "flashbagSuccess" => "Produit ajouté avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_products"),
         ]);
@@ -81,6 +91,9 @@ class ProductController extends AbstractController
     {
         $this->productService->order($request, $product);
 
-        return $this->redirectToRoute('app_products');
+        // Pour éviter de passer un paramètre vide
+        $params = (isset($_GET['idCategory'])) ? array("idCategory" => $_GET['idCategory']) : array();
+
+        return $this->redirectToRoute('app_products', $params);
     }
 }

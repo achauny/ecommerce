@@ -2,10 +2,46 @@
 
 {% block title %} Liste des produits {% endblock %}
 
+{% block stylesheets %}
+    <style>
+        ul {
+            list-style-type: none;
+        }
+        li {
+            margin: 5px 0;
+        }
+        .submenu {
+            margin-left: 20px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     Liste des produits
     <br/>
     <br/>
+
+    {% macro render_menu(items) %}
+
+        {% for id, data in items %}
+            <li>
+                <a href="{{ path('app_products', {'idCategory': id }) }}"> {{ data.name }} </a>
+                {% if data.children is iterable and data.children is not empty %}
+                    <ul class="submenu">
+                        {{ _self.render_menu(data.children) }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    {% endmacro %}
+
+    <ul>
+        <li>
+            <a href="{{ path('app_products') }}"> Tous les produits </a>
+        </li>
+        {{ _self.render_menu(treeCategories) }}
+    </ul>
+
 
     <table>
         <thead>
@@ -44,7 +80,7 @@
                 <td>{{ product.numberView }}</td>
                 <td>
                     <a href="{{ path('app_products_view', {'id': product.id}) }}">Voir la fiche</a>
-                    <a href="{{ path('app_products_order', {'id': product.id}) }}">Commander</a>
+                    <a href="{{ path('app_products_order', {'id': product.id, 'idCategory': idCategory | default(null) }) }}">Commander</a>
                     <a href="{{ path('app_products_edit', {'id': product.id}) }}">Modifier</a>
                 </td>
             </tr>
