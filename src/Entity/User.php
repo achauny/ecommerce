@@ -48,17 +48,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Category::class)]
     private Collection $categories;
 
-    /**
-     * @var Collection<int, Cart>
-     */
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Cart::class)]
-    private Collection $carts;
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Cart $cart = null;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->categories = new ArrayCollection();
-        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,32 +204,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Cart>
-     */
-    public function getCarts(): Collection
+    public function getCart(): ?Cart
     {
-        return $this->carts;
+        return $this->cart;
     }
 
-    public function addCart(Cart $cart): static
+    public function setCart(?Cart $cart): static
     {
-        if (!$this->carts->contains($cart)) {
-            $this->carts->add($cart);
-            $cart->setCreatedBy($this);
+        // unset the owning side of the relation if necessary
+        if ($cart === null && $this->cart !== null) {
+            $this->cart->setUser(null);
         }
 
-        return $this;
-    }
-
-    public function removeCart(Cart $cart): static
-    {
-        if ($this->carts->removeElement($cart)) {
-            // set the owning side to null (unless already changed)
-            if ($cart->getCreatedBy() === $this) {
-                $cart->setCreatedBy(null);
-            }
+        // set the owning side of the relation if necessary
+        if ($cart !== null && $cart->getUser() !== $this) {
+            $cart->setUser($this);
         }
+
+        $this->cart = $cart;
 
         return $this;
     }

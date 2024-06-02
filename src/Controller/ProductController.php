@@ -87,15 +87,4 @@ class ProductController extends AbstractController
             'product' => $product
         ]);
     }
-
-    #[Route('/produits/{id}/commander/', name: 'app_products_order')]
-    public function order(RequestStack $request, Product $product): Response
-    {
-        $cart = $this->entityManager->getRepository(Cart::class)->findOneBy(['createdBy' => $this->getUser()]) ?? new Cart();
-        $this->productService->order($request, $cart, $product);
-
-        // Pour éviter de passer un paramètre vide
-        $params = (isset($_GET['idCategory'])) ? array("idCategory" => $_GET['idCategory']) : array();
-        return $this->redirectToRoute('app_products', $params);
-    }
 }

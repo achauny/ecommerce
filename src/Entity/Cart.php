@@ -15,15 +15,14 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'carts')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $createdBy = null;
-
     /**
      * @var Collection<int, CartProduct>
      */
     #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartProduct::class, cascade: ["persist"])]
     private Collection $cartProducts;
+
+    #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -33,18 +32,6 @@ class Cart
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCreatedBy(): ?User
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(?User $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
     }
 
     /**
@@ -85,6 +72,18 @@ class Cart
                 $cartProduct->setCart(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

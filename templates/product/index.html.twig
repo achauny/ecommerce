@@ -80,7 +80,7 @@
                 <td>{{ product.numberView }}</td>
                 <td>
                     <a href="{{ path('app_products_view', {'id': product.id}) }}">Voir la fiche</a>
-                    <a href="{{ path('app_products_order', {'id': product.id, 'idCategory': idCategory | default(null) }) }}">Commander</a>
+                    <a href="{{ path('app_cart_product_order', {'id': product.id, 'idCategory': idCategory | default(null) }) }}">Commander</a>
                     <a href="{{ path('app_products_edit', {'id': product.id}) }}">Modifier</a>
                 </td>
             </tr>

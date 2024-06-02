@@ -13,9 +13,12 @@
         {% endblock %}
     </head>
     <body>
-        <span class="material-symbols-outlined">
-            shopping_bag
-        </span>
+        <a href="{{ path('app_cart') }}">
+            <span class="material-symbols-outlined">
+                shopping_bag
+            </span>
+        </a>
+
         {% for message in app.flashes('success') %}
             <div class="flash-notice">
                 {{ message }}

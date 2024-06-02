@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Votre panier {% endblock %}
+
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Catégorie
+            </th>
+            <th>
+                Nom
+            </th>
+            <th>
+                Prix unitaire TTC
+            </th>
+            <th>
+                Quantité
+            </th>
+            <th>
+                Prix total TTC
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for cartProduct in cart.cartProducts %}
+                <tr>
+                    <td>{{ cartProduct.product.category }}</td>
+                    <td>{{ cartProduct.product.name }}</td>
+                    <td>{{ cartProduct.product.price }}€</td>
+                    <td>{{ cartProduct.quantity }}</td>
+                    <td>{{ cartProduct.product.price *  cartProduct.quantity }}€</td>
+                    <td>
+                        <a href="{{ path('app_products_view', {'id': cartProduct.product.id}) }}">Voir la fiche</a>
+                        <a href="{{ path('app_cart_product_delete', {'id': cartProduct.id }) }}">Supprimer du panier</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br/>
+    <br/>
+    <b>TOTAL TTC : {{ total }}€</b>
+    <br/>
+    <a href="{{ path('app_products') }}">Retour à la liste des produits </a>
+{% endblock %}
