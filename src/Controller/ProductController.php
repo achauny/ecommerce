@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
+use App\Entity\CartProduct;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Model\ProductModel;
@@ -89,11 +91,11 @@ class ProductController extends AbstractController
     #[Route('/produits/{id}/commander/', name: 'app_products_order')]
     public function order(RequestStack $request, Product $product): Response
     {
-        $this->productService->order($request, $product);
+        $cart = $this->entityManager->getRepository(Cart::class)->findOneBy(['createdBy' => $this->getUser()]) ?? new Cart();
+        $this->productService->order($request, $cart, $product);
 
         // Pour éviter de passer un paramètre vide
         $params = (isset($_GET['idCategory'])) ? array("idCategory" => $_GET['idCategory']) : array();
-
         return $this->redirectToRoute('app_products', $params);
     }
 }

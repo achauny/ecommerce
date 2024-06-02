@@ -48,10 +48,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Category::class)]
     private Collection $categories;
 
+    /**
+     * @var Collection<int, Cart>
+     */
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Cart::class)]
+    private Collection $carts;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +202,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($category->getCreatedBy() === $this) {
                 $category->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): static
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts->add($cart);
+            $cart->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): static
+    {
+        if ($this->carts->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getCreatedBy() === $this) {
+                $cart->setCreatedBy(null);
             }
         }
 
