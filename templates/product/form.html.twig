@@ -16,6 +16,11 @@
     </div>
 
     <div class="form-group">
+        {{ form_label(form.category) }}
+        {{ form_widget(form.category) }}
+    </div>
+
+    <div class="form-group">
         {{ form_label(form.price) }}
         {{ form_widget(form.price) }}
     </div>
@@ -25,9 +30,11 @@
         {{ form_widget(form.stock) }}
     </div>
 
+
+
     <div class="form-group">
-        {{ form_label(form.category) }}
-        {{ form_widget(form.category) }}
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description) }}
     </div>
 
     <button type="submit" class="btn btn-primary">

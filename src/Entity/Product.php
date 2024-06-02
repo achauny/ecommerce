@@ -38,7 +38,7 @@ class Product
     private ?Category $category = null;
 
     #[ORM\Column]
-    private ?int $numberView = null;
+    private ?int $numberView = 0;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;

@@ -64,6 +64,7 @@ class ProductController extends AbstractController
 
         $redirect = FormUtils::validateForm($form, [
             "request" => $request,
+            "modelClass"      => $this->objectModel,
             "flashbagSuccess" => "Produit modifié avec succès.",
             "redirectSuccess" => $this->urlGenerator->generate("app_products"),
         ]);
