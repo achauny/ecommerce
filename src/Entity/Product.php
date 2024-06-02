@@ -37,6 +37,9 @@ class Product
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Category $category = null;
 
+    #[ORM\Column]
+    private ?int $numberView = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,6 +113,18 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getNumberView(): ?int
+    {
+        return $this->numberView;
+    }
+
+    public function setNumberView(int $numberView): static
+    {
+        $this->numberView = $numberView;
 
         return $this;
     }

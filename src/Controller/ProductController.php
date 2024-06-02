@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Model\ProductModel;
+use App\Service\ProductService;
 use App\Utils\FormUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductModel $productModel, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
+    public function __construct(private readonly ProductModel $productModel, private readonly ProductService $productService, private readonly EntityManagerInterface $entityManager, private readonly UrlGeneratorInterface $urlGenerator){
     }
 
     #[Route('/produits', name: 'app_products')]
@@ -61,6 +61,16 @@ class ProductController extends AbstractController
 
         return (!is_null($redirect)) ? $redirect : $this->render('product/form.html.twig', [
             'form' => $form->createView(),
+            'product' => $product
+        ]);
+    }
+
+    #[Route('/produits/{id}/fiche/', name: 'app_products_view')]
+    public function view(Product $product): Response
+    {
+        $this->productService->addView($product);
+
+        return $this->render('product/view.html.twig', [
             'product' => $product
         ]);
     }

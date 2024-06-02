@@ -20,6 +20,9 @@
                 Nom
             </th>
             <th>
+                Nombre de vues
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -30,7 +33,9 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.category }}</td>
                 <td>{{ product.name }}</td>
+                <td>{{ product.numberView }}</td>
                 <td>
+                    <a href="{{ path('app_products_view', {'id': product.id}) }}">Voir la fiche</a>
                     <a href="{{ path('app_products_edit', {'id': product.id}) }}">Modifier</a>
                 </td>
             </tr>
