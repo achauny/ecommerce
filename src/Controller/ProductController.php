@@ -10,6 +10,7 @@ use App\Utils\FormUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -73,5 +74,13 @@ class ProductController extends AbstractController
         return $this->render('product/view.html.twig', [
             'product' => $product
         ]);
+    }
+
+    #[Route('/produits/{id}/commander/', name: 'app_products_order')]
+    public function order(RequestStack $request, Product $product): Response
+    {
+        $this->productService->order($request, $product);
+
+        return $this->redirectToRoute('app_products');
     }
 }

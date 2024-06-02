@@ -9,10 +9,13 @@
 
     Nom : {{ product.name }} <br/>
     Catégorie : {{ product.category }} <br/>
+    Prix : {{ product.price }}€ <br/>
+    Quantité : {{ product.stock }} <br/>
     Nombre de vues : {{ product.numberView }} <br/>
 
 
     <br/>
+    <a href="{{ path('app_products_order', {'id': product.id}) }}">Commander</a>
     <a href="{{ path('app_products') }}">Retour </a>
 
 {% endblock %}

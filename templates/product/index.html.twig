@@ -20,6 +20,12 @@
                 Nom
             </th>
             <th>
+                Prix
+            </th>
+            <th>
+                Quantité
+            </th>
+            <th>
                 Nombre de vues
             </th>
             <th>
@@ -33,9 +39,12 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.category }}</td>
                 <td>{{ product.name }}</td>
+                <td>{{ product.price }}€</td>
+                <td>{{ product.stock }}</td>
                 <td>{{ product.numberView }}</td>
                 <td>
                     <a href="{{ path('app_products_view', {'id': product.id}) }}">Voir la fiche</a>
+                    <a href="{{ path('app_products_order', {'id': product.id}) }}">Commander</a>
                     <a href="{{ path('app_products_edit', {'id': product.id}) }}">Modifier</a>
                 </td>
             </tr>
