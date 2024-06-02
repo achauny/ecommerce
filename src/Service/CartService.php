@@ -6,11 +6,14 @@ namespace App\Service;
 use App\Entity\Cart;
 use App\Entity\CartProduct;
 use App\Entity\Product;
+use App\Entity\User;
+use App\Messenger\Message\MessengerMessage;
 use App\Model\ObjectModel;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 readonly class CartService {
-    public function __construct(private ObjectModel $objectModel) {
+    public function __construct(private ObjectModel $objectModel, private MessageBusInterface $bus) {
     }
 
     public function orderProduct(RequestStack $request, Cart $cart, Product $product): void
@@ -30,6 +33,10 @@ readonly class CartService {
             $this->objectModel->save($cart);
 
             $request->getSession()->getFlashBag()->add('success', 'Produit ajouté au panier avec succès.');
+
+            $messengerMessage = new MessengerMessage(['message' => 'Le produit "'.$product->getName().'" appartenant à "'.$product->getCreatedBy().'" a été ajouté par l\'utilisateur  "'. $cartProduct->getCart()?->getUser().'"'], 'productAdded');
+            $this->bus->dispatch($messengerMessage);
+
         }
     }
 
