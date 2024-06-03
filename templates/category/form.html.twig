@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {% if product is not defined %}
+    {% if category is not defined %}
         Ajouter une catégorie
     {% else %}
         Modifier une catégorie
@@ -10,7 +10,7 @@
 
 {% block body %}
     <div class="title">
-        {% if product is not defined %}
+        {% if category is not defined %}
             Ajouter une catégorie
         {% else %}
             Modifier une catégorie
@@ -41,7 +41,7 @@
 
     <div class="flex flex-row mt-10 ">
         <button type="submit" class="button-primary">
-            {% if product is not defined %}
+            {% if category is not defined %}
                 Ajouter
             {% else %}
                 Modifier
