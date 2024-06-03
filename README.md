@@ -430,3 +430,14 @@ protected function verifyCreatedBy(Request $request, $subject, UserInterface $us
 
 # Test unitaire
 // ...
+
+# Asset Mapper
+Pour importer une bibliothèque JS, par exemple jquery :
+```ssh
+php bin/console importmap:require jquery
+```
+Cela va modifier le fichier importmap.php, on va pouvoir importer la bibliothèque via un import :
+
+```js
+import $ from 'jquery';
+```
