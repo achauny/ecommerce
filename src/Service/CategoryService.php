@@ -16,25 +16,34 @@ readonly class CategoryService {
             ['priority' => 'ASC']
         );
         $tree = [];
+        $visited = [];
 
         foreach ($listCategoriesLevel1 as $categoryLevel1) {
             $tree[$categoryLevel1->getId()] = ['name' => $categoryLevel1->getName(), 'children' => []];
             $children = $categoryLevel1->getCategories(true);
 
             if (count($children) > 0) {
-                $this->buildChildren($tree[$categoryLevel1->getId()]['children'], $children);
+                $this->buildChildren($tree[$categoryLevel1->getId()]['children'], $children, $visited);
             }
         }
 
         return $tree;
     }
 
-    public function buildChildren(&$tree, $children): void {
+    public function buildChildren(&$tree, $children, &$visited): void {
         foreach ($children as $child) {
-            $tree[$child->getId()] = ['name' => $child->getName(), 'children' => []];
+            // Skip if already visited
+            if (isset($visited[$child->getId()])) {
+                continue;
+            }
 
-            if (count($child->getCategories(true)) > 0) {
-                $this->buildChildren($tree[$child->getId()]['children'], $child->getCategories(true));
+            $visited[$child->getId()] = true; // Mark as visited
+
+            $tree[$child->getId()] = ['name' => $child->getName(), 'children' => []];
+            $childCategories = $child->getCategories(true);
+
+            if (count($childCategories) > 0) {
+                $this->buildChildren($tree[$child->getId()]['children'], $childCategories, $visited);
             }
         }
     }
