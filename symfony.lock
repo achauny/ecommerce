@@ -62,7 +62,7 @@
         },
         "files": [
             "./assets/app.js",
-            "./assets/styles/app.css",
+            "./assets/styles/app.scss",
             "./config/packages/asset_mapper.yaml",
             "./importmap.php"
         ]
@@ -310,7 +310,7 @@
         },
         "files": [
             "./assets/app.js",
-            "./assets/styles/app.css",
+            "./assets/styles/app.scss",
             "./config/packages/webpack_encore.yaml",
             "./package.json",
             "./webpack.config.js"
